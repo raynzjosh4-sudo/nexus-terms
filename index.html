@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Discover. Search. Buy. Sell.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0B0A0E; color: #E8E8E8; overflow-x: hidden; }
+        .font-brand { font-family: 'Space Grotesk', sans-serif; }
+        .hero-glow { 
+            position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle, rgba(192, 132, 252, 0.08) 0%, transparent 70%);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-glow"></div>
+
+    <nav class="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+        <div class="flex items-center gap-3">
+            <img src="icon/icon.png" alt="Nexus Logo" class="w-10 h-10 rounded-xl">
+            <h1 class="text-2xl font-brand font-bold tracking-tighter text-white">NEXUS</h1>
+        </div>
+        <div class="flex items-center gap-8">
+            <a href="index.html" class="text-sm font-medium text-purple-400 border-b-2 border-purple-400 pb-1">Download</a>
+            <a href="legal.html" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Legal Hub</a>
+            <a href="https://play.google.com/store/apps/details?id=com.josh.raynz.nexus" class="bg-white text-black px-5 py-2 rounded-full text-xs font-bold hover:bg-purple-400 transition-all">GET APP</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-8 pt-20 pb-32 text-center lg:text-left lg:flex items-center gap-20">
+        
+        <div class="lg:w-1/2">
+            <div class="inline-block bg-purple-500/10 border border-purple-500/20 text-purple-400 px-4 py-1 rounded-full text-xs font-bold mb-6 tracking-widest uppercase">
+                Now Live
+            </div>
+            <h2 class="text-6xl lg:text-7xl font-brand font-bold mb-6 leading-tight">
+                Discover. Search. <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">Buy. Sell.</span>
+            </h2>
+            <p class="text-xl text-gray-400 mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                The direct link to your local marketplace. Find shops near you, chat with sellers, and trade items securely in your community.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                <a href="https://play.google.com/store/apps/details?id=com.josh.raynz.nexus" 
+                   class="bg-[#000] border border-gray-700 hover:bg-gray-900 text-white px-8 py-3 rounded-2xl flex items-center gap-4 transition-transform hover:scale-105 active:scale-95 shadow-2xl">
+                    <img src="icon/playstore.png" alt="Play Store" class="w-8 h-8">
+                    <div class="text-left">
+                        <p class="text-[10px] uppercase font-bold text-gray-400">Get it on</p>
+                        <p class="text-xl font-bold font-brand">Google Play</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="hidden lg:block lg:w-1/2 relative">
+            <div class="w-[310px] h-[630px] mx-auto bg-gray-900 rounded-[3.5rem] border-[10px] border-[#1a1a1a] shadow-2xl relative overflow-hidden">
+                <img src="icon/nexus.jpg" alt="Nexus App Interface" class="w-full h-full object-cover rounded-[2.5rem]">
+            </div>
+            <div class="absolute inset-0 bg-purple-600/20 blur-[120px] -z-10 rounded-full"></div>
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-900 py-12 px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <p class="text-gray-600 text-sm font-medium font-brand">&copy; 2026 NEXUS. Built for the community.</p>
+            <div class="flex items-center gap-8">
+                <a href="legal.html" class="text-xs text-gray-500 hover:text-white">Privacy</a>
+                <a href="legal.html" class="text-xs text-gray-500 hover:text-white">Terms</a>
+                <a href="legal.html" class="text-xs text-gray-500 hover:text-white">Legal Hub</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

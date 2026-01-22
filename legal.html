@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Legal Center</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="env.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+ <script>
+        // 1. Initialize Supabase (renamed to 'nexusClient' to fix the error)
+        const nexusClient = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+
+        async function loadDoc(docId, element) {
+            // Update UI (Sidebar Active State)
+            if (element) {
+                document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
+
+            const contentDiv = document.getElementById('content-area');
+            const loader = document.getElementById('loader');
+            const errorMsg = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+            
+            // Reset View
+            contentDiv.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+                // 2. Fetch Data using 'nexusClient' instead of 'supabase'
+                const { data, error } = await nexusClient
+                    .from('nexus_web_content') 
+                    .select('content')
+                    .eq('id', docId)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    setTimeout(() => {
+                        contentDiv.innerHTML = data.content;
+                        loader.classList.add('hidden');
+                        contentDiv.classList.remove('hidden');
+                        
+                        // Fade in effect
+                        contentDiv.style.opacity = 0;
+                        contentDiv.style.transition = 'opacity 0.5s ease';
+                        requestAnimationFrame(() => contentDiv.style.opacity = 1);
+                    }, 300);
+                } else {
+                    throw new Error("Document not found in database");
+                }
+            } catch (err) {
+                console.error(err);
+                loader.classList.add('hidden');
+                errorMsg.classList.remove('hidden');
+                errorText.innerText = err.message;
+            }
+        }
+
+        // Load General Terms by default
+        window.addEventListener('load', () => {
+            const firstLink = document.querySelector('.sidebar-link');
+            loadDoc('general_terms', firstLink);
+        });
+    </script>
+</body>
+</html>
+</head>
+<body class="h-screen flex overflow-hidden selection:bg-purple-500 selection:text-white">
+
+    <aside class="w-72 bg-[#130d1a] border-r border-purple-500/20 flex-shrink-0 flex flex-col relative z-20">
+        <div class="p-8 border-b border-purple-500/10">
+            <h1 class="text-3xl font-bold tracking-tighter text-white font-[Space_Grotesk]">
+                NEXUS<span class="text-[#C084FC]">.LEGAL</span>
+            </h1>
+            <div class="flex items-center gap-2 mt-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <p class="text-xs text-purple-300/60 uppercase tracking-widest font-semibold">Live Compliance Hub</p>
+            </div>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-6 space-y-1">
+            
+            <div class="px-6 mb-3 mt-2 text-[10px] font-bold text-purple-500/50 uppercase tracking-widest">General User</div>
+            <a onclick="loadDoc('general_terms', this)" class="sidebar-link active block px-6 py-3 text-sm text-gray-400">Terms of Service</a>
+            <a onclick="loadDoc('general_privacy', this)" class="sidebar-link block px-6 py-3 text-sm text-gray-400">Privacy Policy</a>
+            
+            <div class="px-6 mb-3 mt-8 text-[10px] font-bold text-purple-500/50 uppercase tracking-widest">Merchants</div>
+            <a onclick="loadDoc('terms', this)" class="sidebar-link block px-6 py-3 text-sm text-gray-400">Merchant Agreement</a>
+            <a onclick="loadDoc('privacy', this)" class="sidebar-link block px-6 py-3 text-sm text-gray-400">Data & Analytics Policy</a>
+            
+            <div class="px-6 mb-3 mt-8 text-[10px] font-bold text-purple-500/50 uppercase tracking-widest">Features</div>
+            <a onclick="loadDoc('swap_terms', this)" class="sidebar-link block px-6 py-3 text-sm text-gray-400 flex items-center justify-between group">
+                Swap & Barter Rules
+                <span class="text-[10px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded border border-purple-500/30 group-hover:bg-purple-500 group-hover:text-white transition-colors">NEW</span>
+            </a>
+            <a onclick="loadDoc('delete_account', this)" class="sidebar-link block px-6 py-3 text-sm text-red-400/80 hover:text-red-400">Deletion Request</a>
+        </nav>
+
+        <div class="p-6 border-t border-purple-500/10 bg-[#0f0a15]">
+            <a href="index.html" class="flex items-center justify-center w-full py-3 rounded-lg border border-purple-500/30 text-purple-300 text-xs font-medium hover:bg-purple-500/10 hover:border-purple-500 transition-all group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Download Page
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-[#0B0A0E] relative">
+        <div class="absolute top-0 left-0 w-full h-96 bg-purple-900/10 blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto py-16 px-12 relative z-10">
+            
+            <div id="loader" class="flex flex-col items-center justify-center py-40">
+                <div class="relative">
+                    <div class="w-16 h-16 border-4 border-purple-900/30 border-t-purple-500 rounded-full animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+                <p class="mt-6 text-purple-400/60 text-sm animate-pulse font-medium">Fetching Legal Documents...</p>
+            </div>
+
+            <div id="content-area" class="hidden prose prose-invert prose-lg max-w-none text-white [&_*]:text-white [&_p]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_li]:text-white [&_a]:text-blue-400">
+                </div>
+
+            <div id="error-msg" class="hidden flex flex-col items-center justify-center py-20">
+                <div class="bg-red-900/10 border border-red-500/30 p-6 rounded-2xl text-center max-w-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <h3 class="text-xl font-bold text-white mb-2">Connection Failed</h3>
+                    <p id="error-text" class="text-red-300/80 text-sm">Unable to retrieve documents.</p>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        // Initialize Supabase
+        let supabase;
+if (!supabase) {
+    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+}
+
+        async function loadDoc(docId, element) {
+            // 1. Update UI (Sidebar Active State)
+            if (element) {
+                document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
+
+            // 2. Setup UI Elements
+            const contentDiv = document.getElementById('content-area');
+            const loader = document.getElementById('loader');
+            const errorMsg = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+            
+            // 3. Reset View
+            contentDiv.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+                // 4. Fetch Data from the NEW table 'nexus_web_content'
+                const { data, error } = await supabase
+                    .from('nexus_web_content') // <--- CRITICAL UPDATE: Using the clean table
+                    .select('content')
+                    .eq('id', docId)
+                    .single();
+
+                if (error) throw error;
+
+                // 5. Render Content
+                if (data) {
+                    // Slight delay to make the transition feel smoother
+                    setTimeout(() => {
+                        contentDiv.innerHTML = data.content;
+                        loader.classList.add('hidden');
+                        contentDiv.classList.remove('hidden');
+                        
+                        // Fade in effect
+                        contentDiv.style.opacity = 0;
+                        contentDiv.style.transition = 'opacity 0.5s ease';
+                        requestAnimationFrame(() => contentDiv.style.opacity = 1);
+                    }, 300);
+                } else {
+                    throw new Error("Document not found in database");
+                }
+            } catch (err) {
+                console.error(err);
+                loader.classList.add('hidden');
+                errorMsg.classList.remove('hidden');
+                errorText.innerText = err.message;
+            }
+        }
+
+        // Load General Terms by default when page opens
+        window.addEventListener('load', () => {
+            const firstLink = document.querySelector('.sidebar-link');
+            loadDoc('general_terms', firstLink);
+        });
+    </script>
+</body>
+</html>
