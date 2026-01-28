@@ -6,10 +6,8 @@
     <title>Nexus Legal Center</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="env.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
@@ -22,86 +20,7 @@
         }
     </style>
     
- <script>
-        // 1. Initialize Supabase (renamed to 'nexusClient' to fix the error)
-        const nexusClient = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
-        async function loadDoc(docId, element) {
-            // Update UI (Sidebar Active State)
-            if (element) {
-                document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-                element.classList.add('active');
-            }
-
-            const contentDiv = document.getElementById('content-area');
-            const loader = document.getElementById('loader');
-            const errorMsg = document.getElementById('error-msg');
-            const errorText = document.getElementById('error-text');
-            
-            // Reset View
-            contentDiv.classList.add('hidden');
-            errorMsg.classList.add('hidden');
-            loader.classList.remove('hidden');
-
-            try {
-                // 2. Fetch Data using 'nexusClient' instead of 'supabase'
-                const { data, error } = await nexusClient
-                    .from('nexus_web_content') 
-                    .select('content')
-                    .eq('id', docId)
-                    .single();
-
-                if (error) throw error;
-
-                if (data) {
-                    setTimeout(() => {
-                        contentDiv.innerHTML = data.content;
-                        loader.classList.add('hidden');
-                        contentDiv.classList.remove('hidden');
-                        
-                        // Fade in effect
-                        contentDiv.style.opacity = 0;
-                        contentDiv.style.transition = 'opacity 0.5s ease';
-                        requestAnimationFrame(() => contentDiv.style.opacity = 1);
-                    }, 300);
-                } else {
-                    throw new Error("Document not found in database");
-                }
-            } catch (err) {
-                console.error(err);
-                loader.classList.add('hidden');
-                errorMsg.classList.remove('hidden');
-                errorText.innerText = err.message;
-            }
-        }
-
-        // Load General Terms by default
-        window.addEventListener('load', () => {
-            const firstLink = document.querySelector('.sidebar-link');
-            loadDoc('general_terms', firstLink);
-            
-            // Mobile menu toggle
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.getElementById('sidebar');
-            
-            if (menuToggle) {
-                menuToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('hidden');
-                });
-            }
-            
-            // Close menu when a link is clicked on mobile
-            document.querySelectorAll('.sidebar-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth < 768) {
-                        sidebar.classList.add('hidden');
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row overflow-x-hidden selection:bg-purple-500 selection:text-white">
 
@@ -191,45 +110,46 @@
     </main>
 
     <script>
-        // Initialize Supabase
-        let supabase;
-if (!supabase) {
-    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
-}
+        // Initialize Supabase client
+        let nexusClient;
 
         async function loadDoc(docId, element) {
-            // 1. Update UI (Sidebar Active State)
+            // Update UI (Sidebar Active State)
             if (element) {
                 document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
                 element.classList.add('active');
             }
 
-            // 2. Setup UI Elements
+            // Setup UI Elements
             const contentDiv = document.getElementById('content-area');
             const loader = document.getElementById('loader');
             const errorMsg = document.getElementById('error-msg');
             const errorText = document.getElementById('error-text');
             
-            // 3. Reset View
+            // Reset View
             contentDiv.classList.add('hidden');
             errorMsg.classList.add('hidden');
             loader.classList.remove('hidden');
 
             try {
-                // 4. Fetch Data from the NEW table 'nexus_web_content'
-                const { data, error } = await supabase
-                    .from('nexus_web_content') // <--- CRITICAL UPDATE: Using the clean table
+                // Initialize Supabase if not already done
+                if (!nexusClient) {
+                    nexusClient = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+                }
+
+                // Fetch Data from the 'nexus_web_content' table
+                const { data, error } = await nexusClient
+                    .from('nexus_web_content')
                     .select('content')
-                    .eq('id', docId)
-                    .single();
+                    .eq('id', docId);
 
                 if (error) throw error;
 
-                // 5. Render Content
-                if (data) {
+                // Render Content
+                if (data && data.length > 0) {
                     // Slight delay to make the transition feel smoother
                     setTimeout(() => {
-                        contentDiv.innerHTML = data.content;
+                        contentDiv.innerHTML = data[0].content;
                         loader.classList.add('hidden');
                         contentDiv.classList.remove('hidden');
                         
@@ -249,10 +169,29 @@ if (!supabase) {
             }
         }
 
-        // Load General Terms by default when page opens
+        // Load General Terms by default and setup event listeners
         window.addEventListener('load', () => {
             const firstLink = document.querySelector('.sidebar-link');
             loadDoc('general_terms', firstLink);
+            
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('hidden');
+                });
+            }
+            
+            // Close menu when a link is clicked on mobile
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.add('hidden');
+                    }
+                });
+            });
         });
     </script>
 </body>
